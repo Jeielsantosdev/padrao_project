@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  go_api:
+    build: .
+    container_name: go_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - go_db
+    environment:
+      - DB_HOST=go_db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=go_api
+    volumes:
+      - .:/app
+
+  go_db:
+    image: postgres:15
+    container_name: go_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: go_api
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
